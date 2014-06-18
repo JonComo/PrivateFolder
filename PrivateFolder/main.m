@@ -1,0 +1,18 @@
+//
+//  main.m
+//  PrivateFolder
+//
+//  Created by Jon Como on 6/18/14.
+//  Copyright (c) 2014 Jon Como. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+#import "PFAppDelegate.h"
+
+int main(int argc, char * argv[])
+{
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([PFAppDelegate class]));
+    }
+}
