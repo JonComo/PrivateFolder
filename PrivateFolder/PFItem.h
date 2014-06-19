@@ -10,9 +10,21 @@
 
 @class ALAsset;
 
-@interface PFItem : NSObject
+@interface PFItem : NSObject <NSCoding>
+
+@property (nonatomic, copy) NSString *prefix;
 
 @property BOOL isSelected;
 @property (nonatomic, strong) ALAsset *asset;
+
+//for saved files:
+@property (nonatomic, strong) NSURL *archiveURL;
+@property (nonatomic, strong) UIImage *thumbnail;
+@property (nonatomic, strong) NSURL *dataURL;
+@property (nonatomic, strong) NSDate *dateSaved;
+
+-(void)save;
+-(void)remove;
++(void)itemsCompletion:(void(^)(NSMutableArray *items))block;
 
 @end

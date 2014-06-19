@@ -7,10 +7,8 @@
 //
 
 #import "PFAssetPickerViewController.h"
-#import "PFAssetCell.h"
-#import "PFItem.h"
 
-@import AssetsLibrary;
+#import "PFAssetCell.h"
 
 @interface PFAssetPickerViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 {
@@ -19,26 +17,53 @@
     UICollectionView *collectionViewAssets;
     UIRefreshControl *refreshControl;
     
-    ALAssetsLibrary *library;
+    UIBarButtonItem *import;
+    
+    BOOL didShow;
 }
 
 @end
 
 @implementation PFAssetPickerViewController
 
++(PFAssetPickerViewController *)assetPickerCompletion:(AssetPickerCompletion)completion
+{
+    PFAssetPickerViewController *picker = [PFAssetPickerViewController new];
+    
+    picker.completion = completion;
+    
+    return picker;
+}
+
++(ALAssetsLibrary *)sharedLibrary
+{
+    static ALAssetsLibrary *library;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        library = [ALAssetsLibrary new];
+    });
+    
+    return library;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    didShow = NO;
+    
     self.view.backgroundColor = [UIColor whiteColor];
     
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44)];
-    [self.view addSubview:toolbar];
     
     UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(cancel)];
+    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
     
-    toolbar.items = @[cancel];
+    import = [[UIBarButtonItem alloc] initWithTitle:@"Import" style:UIBarButtonItemStyleBordered target:self action:@selector(import)];
+    
+    toolbar.items = @[cancel, spacer, import];
     
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     
@@ -46,7 +71,7 @@
     layout.minimumInteritemSpacing = 0;
     layout.minimumLineSpacing = 0;
     
-    collectionViewAssets = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - toolbar.frame.size.height) collectionViewLayout:layout];
+    collectionViewAssets = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) collectionViewLayout:layout];
     
     [collectionViewAssets registerClass:[PFAssetCell class] forCellWithReuseIdentifier:@"assetCell"];
     
@@ -55,7 +80,10 @@
     collectionViewAssets.alwaysBounceVertical = YES;
     collectionViewAssets.backgroundColor = [UIColor whiteColor];
     
+    collectionViewAssets.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height, 0, toolbar.frame.size.height, 0);
+    
     [self.view addSubview:collectionViewAssets];
+    [self.view addSubview:toolbar];
     
     refreshControl = [UIRefreshControl new];
     [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
@@ -66,7 +94,10 @@
 {
     [super viewDidAppear:animated];
     
-    [self refresh];
+    if (!didShow){
+        didShow = YES;
+        [self refresh];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -77,11 +108,49 @@
 
 -(void)cancel
 {
+    if (self.completion) self.completion(nil);
+    
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)import
+{
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.mode = MBProgressHUDModeDeterminate;
+    hud.labelText = @"Importing";
+    hud.progress = 0;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        NSMutableArray *selectedItems = [NSMutableArray array];
+        for (PFItem *item in items){
+            if (item.isSelected){
+                [selectedItems addObject:item];
+            }
+        }
+        
+        int total = selectedItems.count;
+        int toSave = total;
+        
+        for (PFItem *item in selectedItems){
+            [item save];
+            toSave --;
+            hud.progress = 1.0 - (float)toSave / (float)total;
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hide:YES];
+            
+            if (self.completion) self.completion(selectedItems);
+            [self dismissViewControllerAnimated:YES completion:nil];
+        });
+    });
 }
 
 -(void)refresh
 {
+    if (!refreshControl.isRefreshing) [refreshControl beginRefreshing];
+    
     [self getAssetsCompletion:^{
         [collectionViewAssets reloadData];
         [refreshControl endRefreshing];
@@ -94,10 +163,7 @@
     if (!items) items = [NSMutableArray array];
     [items removeAllObjects];
     
-    if (!library)
-        library = [ALAssetsLibrary new];
-    
-    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+    [[PFAssetPickerViewController sharedLibrary] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
         if (group){
             [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                 if (result)

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		861A645719527AAA0049B52B /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 861A645619527AAA0049B52B /* AssetsLibrary.framework */; };
 		86DC3B131952423300D1184E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86DC3B121952423300D1184E /* Foundation.framework */; };
 		86DC3B151952423300D1184E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86DC3B141952423300D1184E /* CoreGraphics.framework */; };
 		86DC3B171952423300D1184E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86DC3B161952423300D1184E /* UIKit.framework */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		861A645619527AAA0049B52B /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		86DC3B0F1952423300D1184E /* PrivateFolder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrivateFolder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86DC3B121952423300D1184E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		86DC3B141952423300D1184E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -80,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				861A645719527AAA0049B52B /* AssetsLibrary.framework in Frameworks */,
 				86DC3B151952423300D1184E /* CoreGraphics.framework in Frameworks */,
 				86DC3B171952423300D1184E /* UIKit.framework in Frameworks */,
 				86DC3B131952423300D1184E /* Foundation.framework in Frameworks */,
@@ -121,6 +124,7 @@
 		86DC3B111952423300D1184E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				861A645619527AAA0049B52B /* AssetsLibrary.framework */,
 				86DC3B4A195246B600D1184E /* MBProgressHUD.h */,
 				86DC3B4B195246B600D1184E /* MBProgressHUD.m */,
 				86DC3B121952423300D1184E /* Foundation.framework */,
@@ -513,6 +517,7 @@
 				86DC3B431952423300D1184E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		86DC3B441952423300D1184E /* Build configuration list for PBXNativeTarget "PrivateFolderTests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +526,7 @@
 				86DC3B461952423300D1184E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

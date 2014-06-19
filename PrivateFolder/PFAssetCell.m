@@ -10,8 +10,6 @@
 
 #import "PFItem.h"
 
-@import AssetsLibrary;
-
 @implementation PFAssetCell
 {
     UIImageView *imageViewThumb;
@@ -37,7 +35,7 @@
     _item = item;
     
     //show a thumbnail
-    imageViewThumb.image = [UIImage imageWithCGImage:item.asset.thumbnail];
+    imageViewThumb.image = item.thumbnail;
     
     if (item.isSelected)
     {

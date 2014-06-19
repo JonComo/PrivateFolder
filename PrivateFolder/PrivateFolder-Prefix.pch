@@ -19,4 +19,6 @@
 #import "MBProgressHUD.h"
 #import "PFLock.h"
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #endif

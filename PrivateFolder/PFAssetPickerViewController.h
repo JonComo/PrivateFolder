@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+#import "PFItem.h"
+
+typedef void (^AssetPickerCompletion)(NSMutableArray *items);
+
 @interface PFAssetPickerViewController : UIViewController
+
+@property (nonatomic, copy) AssetPickerCompletion completion;
+
++(ALAssetsLibrary *)sharedLibrary;
+
++(PFAssetPickerViewController *)assetPickerCompletion:(AssetPickerCompletion)completion;
 
 @end
