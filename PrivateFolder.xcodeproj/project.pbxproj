@@ -14,13 +14,20 @@
 		86DC3B1F1952423300D1184E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B1E1952423300D1184E /* main.m */; };
 		86DC3B231952423300D1184E /* PFAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B221952423300D1184E /* PFAppDelegate.m */; };
 		86DC3B261952423300D1184E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86DC3B241952423300D1184E /* Main.storyboard */; };
-		86DC3B291952423300D1184E /* PFViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B281952423300D1184E /* PFViewController.m */; };
 		86DC3B2B1952423300D1184E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86DC3B2A1952423300D1184E /* Images.xcassets */; };
 		86DC3B321952423300D1184E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86DC3B311952423300D1184E /* XCTest.framework */; };
 		86DC3B331952423300D1184E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86DC3B121952423300D1184E /* Foundation.framework */; };
 		86DC3B341952423300D1184E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86DC3B161952423300D1184E /* UIKit.framework */; };
 		86DC3B3C1952423300D1184E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 86DC3B3A1952423300D1184E /* InfoPlist.strings */; };
 		86DC3B3E1952423300D1184E /* PrivateFolderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B3D1952423300D1184E /* PrivateFolderTests.m */; };
+		86DC3B49195242D000D1184E /* PFLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B48195242D000D1184E /* PFLockViewController.m */; };
+		86DC3B4C195246B600D1184E /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B4B195246B600D1184E /* MBProgressHUD.m */; };
+		86DC3B4F195249AC00D1184E /* PFCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B4E195249AC00D1184E /* PFCollectionViewController.m */; };
+		86DC3B52195249FC00D1184E /* PFLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B51195249FC00D1184E /* PFLock.m */; };
+		86DC3B551952566D00D1184E /* PFAssetPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B541952566D00D1184E /* PFAssetPickerViewController.m */; };
+		86DC3B5919525C0A00D1184E /* PFAssetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B5819525C0A00D1184E /* PFAssetCell.m */; };
+		86DC3B5F19525F8A00D1184E /* PFItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 86DC3B5E19525F8A00D1184E /* PFItem.m */; };
+		86DC3B631952612F00D1184E /* selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 86DC3B611952612F00D1184E /* selected@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,14 +52,27 @@
 		86DC3B211952423300D1184E /* PFAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PFAppDelegate.h; sourceTree = "<group>"; };
 		86DC3B221952423300D1184E /* PFAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PFAppDelegate.m; sourceTree = "<group>"; };
 		86DC3B251952423300D1184E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		86DC3B271952423300D1184E /* PFViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PFViewController.h; sourceTree = "<group>"; };
-		86DC3B281952423300D1184E /* PFViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PFViewController.m; sourceTree = "<group>"; };
 		86DC3B2A1952423300D1184E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		86DC3B301952423300D1184E /* PrivateFolderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateFolderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		86DC3B311952423300D1184E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		86DC3B391952423300D1184E /* PrivateFolderTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PrivateFolderTests-Info.plist"; sourceTree = "<group>"; };
 		86DC3B3B1952423300D1184E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		86DC3B3D1952423300D1184E /* PrivateFolderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrivateFolderTests.m; sourceTree = "<group>"; };
+		86DC3B47195242D000D1184E /* PFLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFLockViewController.h; sourceTree = "<group>"; };
+		86DC3B48195242D000D1184E /* PFLockViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFLockViewController.m; sourceTree = "<group>"; };
+		86DC3B4A195246B600D1184E /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = ../Libraries/MBProgressHUD/MBProgressHUD.h; sourceTree = "<group>"; };
+		86DC3B4B195246B600D1184E /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = ../Libraries/MBProgressHUD/MBProgressHUD.m; sourceTree = "<group>"; };
+		86DC3B4D195249AC00D1184E /* PFCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFCollectionViewController.h; sourceTree = "<group>"; };
+		86DC3B4E195249AC00D1184E /* PFCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFCollectionViewController.m; sourceTree = "<group>"; };
+		86DC3B50195249FC00D1184E /* PFLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFLock.h; sourceTree = "<group>"; };
+		86DC3B51195249FC00D1184E /* PFLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFLock.m; sourceTree = "<group>"; };
+		86DC3B531952566D00D1184E /* PFAssetPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFAssetPickerViewController.h; sourceTree = "<group>"; };
+		86DC3B541952566D00D1184E /* PFAssetPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFAssetPickerViewController.m; sourceTree = "<group>"; };
+		86DC3B5719525C0A00D1184E /* PFAssetCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFAssetCell.h; sourceTree = "<group>"; };
+		86DC3B5819525C0A00D1184E /* PFAssetCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFAssetCell.m; sourceTree = "<group>"; };
+		86DC3B5D19525F8A00D1184E /* PFItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFItem.h; sourceTree = "<group>"; };
+		86DC3B5E19525F8A00D1184E /* PFItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFItem.m; sourceTree = "<group>"; };
+		86DC3B611952612F00D1184E /* selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "selected@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +121,8 @@
 		86DC3B111952423300D1184E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				86DC3B4A195246B600D1184E /* MBProgressHUD.h */,
+				86DC3B4B195246B600D1184E /* MBProgressHUD.m */,
 				86DC3B121952423300D1184E /* Foundation.framework */,
 				86DC3B141952423300D1184E /* CoreGraphics.framework */,
 				86DC3B161952423300D1184E /* UIKit.framework */,
@@ -112,11 +134,17 @@
 		86DC3B181952423300D1184E /* PrivateFolder */ = {
 			isa = PBXGroup;
 			children = (
+				86DC3B601952612F00D1184E /* media */,
 				86DC3B211952423300D1184E /* PFAppDelegate.h */,
 				86DC3B221952423300D1184E /* PFAppDelegate.m */,
 				86DC3B241952423300D1184E /* Main.storyboard */,
-				86DC3B271952423300D1184E /* PFViewController.h */,
-				86DC3B281952423300D1184E /* PFViewController.m */,
+				86DC3B47195242D000D1184E /* PFLockViewController.h */,
+				86DC3B48195242D000D1184E /* PFLockViewController.m */,
+				86DC3B4D195249AC00D1184E /* PFCollectionViewController.h */,
+				86DC3B4E195249AC00D1184E /* PFCollectionViewController.m */,
+				86DC3B5619525BFE00D1184E /* AssetsPicker */,
+				86DC3B50195249FC00D1184E /* PFLock.h */,
+				86DC3B51195249FC00D1184E /* PFLock.m */,
 				86DC3B2A1952423300D1184E /* Images.xcassets */,
 				86DC3B191952423300D1184E /* Supporting Files */,
 			);
@@ -150,6 +178,27 @@
 				86DC3B3A1952423300D1184E /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		86DC3B5619525BFE00D1184E /* AssetsPicker */ = {
+			isa = PBXGroup;
+			children = (
+				86DC3B531952566D00D1184E /* PFAssetPickerViewController.h */,
+				86DC3B541952566D00D1184E /* PFAssetPickerViewController.m */,
+				86DC3B5719525C0A00D1184E /* PFAssetCell.h */,
+				86DC3B5819525C0A00D1184E /* PFAssetCell.m */,
+				86DC3B5D19525F8A00D1184E /* PFItem.h */,
+				86DC3B5E19525F8A00D1184E /* PFItem.m */,
+			);
+			name = AssetsPicker;
+			sourceTree = "<group>";
+		};
+		86DC3B601952612F00D1184E /* media */ = {
+			isa = PBXGroup;
+			children = (
+				86DC3B611952612F00D1184E /* selected@2x.png */,
+			);
+			path = media;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				86DC3B2B1952423300D1184E /* Images.xcassets in Resources */,
+				86DC3B631952612F00D1184E /* selected@2x.png in Resources */,
 				86DC3B1D1952423300D1184E /* InfoPlist.strings in Resources */,
 				86DC3B261952423300D1184E /* Main.storyboard in Resources */,
 			);
@@ -250,9 +300,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86DC3B551952566D00D1184E /* PFAssetPickerViewController.m in Sources */,
+				86DC3B52195249FC00D1184E /* PFLock.m in Sources */,
+				86DC3B49195242D000D1184E /* PFLockViewController.m in Sources */,
+				86DC3B5F19525F8A00D1184E /* PFItem.m in Sources */,
+				86DC3B4F195249AC00D1184E /* PFCollectionViewController.m in Sources */,
 				86DC3B231952423300D1184E /* PFAppDelegate.m in Sources */,
-				86DC3B291952423300D1184E /* PFViewController.m in Sources */,
 				86DC3B1F1952423300D1184E /* main.m in Sources */,
+				86DC3B5919525C0A00D1184E /* PFAssetCell.m in Sources */,
+				86DC3B4C195246B600D1184E /* MBProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

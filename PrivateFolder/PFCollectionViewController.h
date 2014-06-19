@@ -1,5 +1,5 @@
 //
-//  PFViewController.h
+//  PFCollectionViewController.h
 //  PrivateFolder
 //
 //  Created by Jon Como on 6/18/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PFViewController : UIViewController
+@interface PFCollectionViewController : UIViewController
 
 @end
