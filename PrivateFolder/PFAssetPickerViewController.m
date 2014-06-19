@@ -134,6 +134,7 @@
         
         for (PFItem *item in selectedItems){
             [item save];
+            sleep(3);
             toSave --;
             hud.progress = 1.0 - (float)toSave / (float)total;
         }

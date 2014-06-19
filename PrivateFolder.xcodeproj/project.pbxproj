@@ -139,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				86DC3B601952612F00D1184E /* media */,
+				86DC3B5619525BFE00D1184E /* AssetsPicker */,
 				86DC3B211952423300D1184E /* PFAppDelegate.h */,
 				86DC3B221952423300D1184E /* PFAppDelegate.m */,
 				86DC3B241952423300D1184E /* Main.storyboard */,
@@ -146,7 +147,6 @@
 				86DC3B48195242D000D1184E /* PFLockViewController.m */,
 				86DC3B4D195249AC00D1184E /* PFCollectionViewController.h */,
 				86DC3B4E195249AC00D1184E /* PFCollectionViewController.m */,
-				86DC3B5619525BFE00D1184E /* AssetsPicker */,
 				86DC3B50195249FC00D1184E /* PFLock.h */,
 				86DC3B51195249FC00D1184E /* PFLock.m */,
 				86DC3B2A1952423300D1184E /* Images.xcassets */,

@@ -23,6 +23,14 @@
     BOOL didRefresh;
     
     UIBarButtonItem *import;
+    
+    UIView *fade;
+    
+    BOOL statusBarHidden;
+    
+    int presentedIndex;
+    
+    UIImageView *imageView; //presented image view
 }
 
 @end
@@ -33,6 +41,9 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    fade = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    fade.backgroundColor = [UIColor blackColor];
     
     savedItems = [NSMutableArray array];
     
@@ -95,6 +106,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(BOOL)prefersStatusBarHidden
+{
+    return statusBarHidden;
+}
+
 -(void)settings
 {
     
@@ -102,7 +118,18 @@
 
 -(void)export
 {
-    
+    for (PFItem *item in savedItems)
+    {
+        if (item.isSelected)
+        {
+            NSData *data = [NSData dataWithContentsOfURL:item.dataURL];
+            if (data){
+                [[PFAssetPickerViewController sharedLibrary] writeImageDataToSavedPhotosAlbum:data metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
+                    
+                }];
+            }
+        }
+    }
 }
 
 -(void)delete
@@ -171,10 +198,96 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    PFItem *item = savedItems[indexPath.row];
-    item.isSelected = !item.isSelected;
+    //PFItem *item = savedItems[indexPath.row];
+//    item.isSelected = !item.isSelected;
+//    
+//    [collectionView reloadData];
     
-    [collectionView reloadData];
+    presentedIndex = indexPath.row;
+    [self showImageView];
+}
+
+-(void)swipeRight
+{
+    presentedIndex -= 1;
+    
+    [self showImageView];
+}
+
+-(void)swipeLeft
+{
+    presentedIndex += 1;
+    
+    [self showImageView];
+}
+
+-(void)showImageView
+{
+    if (presentedIndex < 0){
+        presentedIndex = 0;
+        return;
+    }
+    
+    if (presentedIndex > savedItems.count - 1){
+        presentedIndex = savedItems.count - 1;
+        return;
+    }
+    
+    if (!imageView){
+        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [imageView setUserInteractionEnabled:YES];
+        
+        [imageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideImageView:)]];
+        
+        UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight)];
+        swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+        [imageView addGestureRecognizer:swipeRight];
+        
+        UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft)];
+        swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+        [imageView addGestureRecognizer:swipeLeft];
+    }
+    
+    PFItem *item = savedItems[presentedIndex];
+    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:item.dataURL]];
+    imageView.image = image;
+    
+    if (!imageView.superview)
+    {
+        imageView.layer.transform = CATransform3DMakeScale(0.9, 0.9, 0.9);
+        imageView.alpha = 0;
+        
+        fade.alpha = 0;
+        
+        [self.view addSubview:fade];
+        [self.view addSubview:imageView];
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            imageView.alpha = 1;
+            fade.alpha = 1;
+            imageView.layer.transform = CATransform3DIdentity;
+        }];
+    }
+    
+    statusBarHidden = YES;
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+-(void)hideImageView:(UITapGestureRecognizer *)tap
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        fade.alpha = 0;
+        
+        tap.view.alpha = 0;
+        tap.view.layer.transform = CATransform3DMakeScale(0.9, 0.9, 0.9);
+    } completion:^(BOOL finished) {
+        [tap.view removeFromSuperview];
+        [fade removeFromSuperview];
+    }];
+    
+    statusBarHidden = NO;
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 -(void)showMotionCue

@@ -71,6 +71,7 @@ static NSDateFormatter *formatter;
 -(void)save
 {
     self.archiveURL = [self uniqueURLWithPrefix:@"information"];
+    self.dataURL = [self uniqueURLWithPrefix:@"data"];
     
     [NSKeyedArchiver archiveRootObject:self toFile:[self.archiveURL path]];
     
@@ -79,12 +80,8 @@ static NSDateFormatter *formatter;
         ALAssetRepresentation *representation = [asset defaultRepresentation];
         
         UIImage *fullImage = [UIImage imageWithCGImage:[representation fullResolutionImage]];
-        
-        NSData *data = UIImagePNGRepresentation(fullImage);
-        
-        NSURL *fullImageURL = [self uniqueURLWithPrefix:@"data"];
-        
-        [data writeToURL:fullImageURL atomically:YES];
+        NSData *data = UIImageJPEGRepresentation(fullImage, 1);
+        [data writeToURL:self.dataURL atomically:YES];
     } failureBlock:^(NSError *error) {
         
     }];
