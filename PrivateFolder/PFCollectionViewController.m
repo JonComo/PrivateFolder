@@ -16,13 +16,22 @@
 {
     UICollectionView *collectionViewItems;
     
-    UIRefreshControl *refreshControl;
-    
     NSArray *savedItems;
     
     BOOL didRefresh;
     
+    UIToolbar *toolbar;
+    
     UIBarButtonItem *import;
+    UIBarButtonItem *export;
+    UIBarButtonItem *delete;
+    UIBarButtonItem *settings;
+    
+    UIBarButtonItem *spacer0;
+    UIBarButtonItem *spacer1;
+    UIBarButtonItem *spacer2;
+    
+    UIBarButtonItem *selectButton;
     
     UIView *fade;
     
@@ -31,6 +40,8 @@
     int presentedIndex;
     
     UIImageView *imageView; //presented image view
+    
+    BOOL isSelecting;
 }
 
 @end
@@ -42,26 +53,28 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.title = @"Private Folder";
+    
     fade = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     fade.backgroundColor = [UIColor blackColor];
     
     savedItems = [NSMutableArray array];
     
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44)];
+    toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44)];
     
     import = [[UIBarButtonItem alloc] initWithTitle:@"Import" style:UIBarButtonItemStyleBordered target:self action:@selector(import)];
     
-    UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settings)];
+    settings = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settings)];
     
-    UIBarButtonItem *export = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStyleBordered target:self action:@selector(export)];
+    export = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStyleBordered target:self action:@selector(export)];
     
-    UIBarButtonItem *delete = [[UIBarButtonItem alloc] initWithTitle:@"Delete" style:UIBarButtonItemStyleBordered target:self action:@selector(delete)];
+    delete = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(delete)];
     
-    UIBarButtonItem *spacer0 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
-    UIBarButtonItem *spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
-    UIBarButtonItem *spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    spacer0 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
     
-    toolbar.items = @[import, spacer0, settings, spacer1, delete, spacer2, export];
+    toolbar.items = @[import, spacer0, settings];
     
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     
@@ -78,15 +91,12 @@
     collectionViewItems.alwaysBounceVertical = YES;
     collectionViewItems.backgroundColor = [UIColor whiteColor];
     
-    collectionViewItems.contentInset = UIEdgeInsetsMake([UIApplication sharedApplication].statusBarFrame.size.height, 0, toolbar.frame.size.height, 0);
+    collectionViewItems.contentInset = UIEdgeInsetsMake(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height, 0, toolbar.frame.size.height, 0);
     
     [self.view addSubview:collectionViewItems];
     [self.view addSubview:toolbar];
     
-    refreshControl = [UIRefreshControl new];
-    refreshControl.tintColor = [UIColor blackColor];
-    [refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-    [collectionViewItems addSubview:refreshControl];
+    selectButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(toggleSelect)];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -109,6 +119,32 @@
 -(BOOL)prefersStatusBarHidden
 {
     return statusBarHidden;
+}
+
+-(void)toggleSelect
+{
+    isSelecting = !isSelecting;
+    
+    NSDictionary *attributes;
+    
+    if (isSelecting){
+        attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:17]};
+        [self.navigationItem.rightBarButtonItem setTitle:@"Cancel"];
+        
+        [toolbar setItems:@[delete, spacer2, export] animated:YES];
+        
+    }else{
+        attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:17]};
+        [self.navigationItem.rightBarButtonItem setTitle:@"Select"];
+        
+        for (PFItem *item in savedItems)
+            item.isSelected = NO;
+        [collectionViewItems reloadData];
+        
+        [toolbar setItems:@[import, spacer0, settings] animated:YES];
+    }
+    
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
 }
 
 -(void)settings
@@ -153,9 +189,12 @@
 
 -(void)refresh
 {
-    if (!refreshControl.isRefreshing) [refreshControl beginRefreshing];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"Loading";
     
     [PFItem itemsCompletion:^(NSMutableArray *items) {
+        
+        [hud hide:YES];
         
         savedItems = [items sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             
@@ -165,8 +204,16 @@
             return [item1.dateSaved compare:item2.dateSaved];
         }];
         
-        [refreshControl endRefreshing];
         [collectionViewItems reloadData];
+        
+        if (isSelecting && savedItems.count == 0)
+            [self toggleSelect]; //go back to import view
+        if (savedItems.count == 0)
+        {
+            self.navigationItem.rightBarButtonItem = nil;
+        }else{
+            self.navigationItem.rightBarButtonItem = selectButton;
+        }
         
         [self showMotionCue];
     }];
@@ -174,7 +221,7 @@
 
 -(void)import
 {
-    PFAssetPickerViewController *assetPicker = [PFAssetPickerViewController assetPickerCompletion:^(NSMutableArray *items) {
+    PFAssetPickerViewController *assetPicker = [PFAssetPickerViewController assetPickerCompletion:^{
         [self refresh];
     }];
     
@@ -198,27 +245,51 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    //PFItem *item = savedItems[indexPath.row];
-//    item.isSelected = !item.isSelected;
-//    
-//    [collectionView reloadData];
-    
-    presentedIndex = indexPath.row;
-    [self showImageView];
+    if (isSelecting){
+        PFItem *item = savedItems[indexPath.row];
+        item.isSelected = !item.isSelected;
+        
+        [collectionView reloadData];
+    }else{
+        presentedIndex = indexPath.row;
+        [self showImageView];
+    }
 }
 
 -(void)swipeRight
 {
     presentedIndex -= 1;
     
-    [self showImageView];
+    [UIView animateWithDuration:0.2 animations:^{
+        imageView.layer.transform = CATransform3DMakeTranslation(100, 0, 0);
+        imageView.alpha = 0;
+    } completion:^(BOOL finished) {
+        imageView.layer.transform = CATransform3DMakeTranslation(-100, 0, 0);
+        [self showImageView];
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            imageView.layer.transform = CATransform3DIdentity;
+            imageView.alpha = 1;
+        }];
+    }];
 }
 
 -(void)swipeLeft
 {
     presentedIndex += 1;
     
-    [self showImageView];
+    [UIView animateWithDuration:0.2 animations:^{
+        imageView.layer.transform = CATransform3DMakeTranslation(-100, 0, 0);
+        imageView.alpha = 0;
+    } completion:^(BOOL finished) {
+        imageView.layer.transform = CATransform3DMakeTranslation(100, 0, 0);
+        [self showImageView];
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            imageView.layer.transform = CATransform3DIdentity;
+            imageView.alpha = 1;
+        }];
+    }];
 }
 
 -(void)showImageView
@@ -272,6 +343,8 @@
     
     statusBarHidden = YES;
     [self setNeedsStatusBarAppearanceUpdate];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
 
 -(void)hideImageView:(UITapGestureRecognizer *)tap
@@ -288,6 +361,8 @@
     
     statusBarHidden = NO;
     [self setNeedsStatusBarAppearanceUpdate];
+    
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
 -(void)showMotionCue

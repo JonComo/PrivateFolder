@@ -68,22 +68,26 @@ static NSDateFormatter *formatter;
     return _thumbnail;
 }
 
--(void)save
+-(void)saveCompletion:(void (^)(void))block
 {
     self.archiveURL = [self uniqueURLWithPrefix:@"information"];
     self.dataURL = [self uniqueURLWithPrefix:@"data"];
-    
-    [NSKeyedArchiver archiveRootObject:self toFile:[self.archiveURL path]];
     
     [[PFAssetPickerViewController sharedLibrary] assetForURL:[self.asset valueForProperty:ALAssetPropertyAssetURL] resultBlock:^(ALAsset *asset) {
         // get data
         ALAssetRepresentation *representation = [asset defaultRepresentation];
         
-        UIImage *fullImage = [UIImage imageWithCGImage:[representation fullResolutionImage]];
-        NSData *data = UIImageJPEGRepresentation(fullImage, 1);
-        [data writeToURL:self.dataURL atomically:YES];
-    } failureBlock:^(NSError *error) {
+        UIImage *image = [UIImage imageWithCGImage:[representation fullResolutionImage] scale:[representation scale] orientation:(int)[representation orientation]];
         
+        NSData *data = UIImageJPEGRepresentation(image, 1);
+        [data writeToURL:self.dataURL atomically:YES];
+        
+        [NSKeyedArchiver archiveRootObject:self toFile:[self.archiveURL path]];
+        
+        if (block) block();
+        
+    } failureBlock:^(NSError *error) {
+        if (block) block();
     }];
 }
 

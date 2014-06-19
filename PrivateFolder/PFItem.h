@@ -23,7 +23,7 @@
 @property (nonatomic, strong) NSURL *dataURL;
 @property (nonatomic, strong) NSDate *dateSaved;
 
--(void)save;
+-(void)saveCompletion:(void(^)(void))block;
 -(void)remove;
 +(void)itemsCompletion:(void(^)(NSMutableArray *items))block;
 

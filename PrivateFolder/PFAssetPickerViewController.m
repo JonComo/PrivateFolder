@@ -13,6 +13,8 @@
 @interface PFAssetPickerViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 {
     NSMutableArray *items;
+    NSMutableArray *itemsToImport;
+    int totalToImport;
     
     UICollectionView *collectionViewAssets;
     UIRefreshControl *refreshControl;
@@ -20,6 +22,8 @@
     UIBarButtonItem *import;
     
     BOOL didShow;
+    
+    MBProgressHUD *hud;
 }
 
 @end
@@ -108,44 +112,56 @@
 
 -(void)cancel
 {
-    if (self.completion) self.completion(nil);
+    if (self.completion) self.completion();
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)import
 {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeDeterminate;
     hud.labelText = @"Importing";
     hud.progress = 0;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        if (!itemsToImport) itemsToImport = [NSMutableArray array];
+        [itemsToImport removeAllObjects];
         
-        NSMutableArray *selectedItems = [NSMutableArray array];
         for (PFItem *item in items){
             if (item.isSelected){
-                [selectedItems addObject:item];
+                [itemsToImport addObject:item];
             }
         }
         
-        int total = selectedItems.count;
-        int toSave = total;
+        totalToImport = itemsToImport.count;
         
-        for (PFItem *item in selectedItems){
-            [item save];
-            sleep(3);
-            toSave --;
-            hud.progress = 1.0 - (float)toSave / (float)total;
-        }
-        
+        [self importNext];
+    });
+}
+
+-(void)importNext
+{
+    if (itemsToImport.count == 0){
+        //done importing all
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud hide:YES];
-            
-            if (self.completion) self.completion(selectedItems);
+            if (self.completion) self.completion();
             [self dismissViewControllerAnimated:YES completion:nil];
         });
-    });
+        
+        return;
+    }
+    
+    hud.progress = 1.0 - (float)itemsToImport.count / (float)totalToImport;
+    
+    PFItem *item = [itemsToImport lastObject];
+    [itemsToImport removeObject:item];
+    
+    __weak PFAssetPickerViewController *weakSelf = self;
+    [item saveCompletion:^{
+        [weakSelf importNext];
+    }];
 }
 
 -(void)refresh
@@ -165,7 +181,9 @@
     [items removeAllObjects];
     
     [[PFAssetPickerViewController sharedLibrary] enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-        if (group){
+        if (group)
+        {
+            [group setAssetsFilter:[ALAssetsFilter allPhotos]];
             [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                 if (result)
                 {
