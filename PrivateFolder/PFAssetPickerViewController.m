@@ -171,7 +171,8 @@
     [self getAssetsCompletion:^{
         [collectionViewAssets reloadData];
         [refreshControl endRefreshing];
-        [collectionViewAssets scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:items.count-1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+        if (items.count > 0)
+            [collectionViewAssets scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:items.count-1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
     }];
 }
 

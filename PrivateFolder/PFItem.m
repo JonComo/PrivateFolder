@@ -24,6 +24,7 @@ static NSDateFormatter *formatter;
         _dataURL = [aDecoder decodeObjectForKey:@"dataURL"];
         _archiveURL = [aDecoder decodeObjectForKey:@"archiveURL"];
         _dateSaved = [aDecoder decodeObjectForKey:@"dateSaved"];
+        _largeThumbnailURL = [aDecoder decodeObjectForKey:@"largeThumb"];
     }
     
     return self;
@@ -35,6 +36,7 @@ static NSDateFormatter *formatter;
     [aCoder encodeObject:self.dataURL forKey:@"dataURL"];
     [aCoder encodeObject:self.archiveURL forKey:@"archiveURL"];
     [aCoder encodeObject:[NSDate date] forKey:@"dateSaved"];
+    [aCoder encodeObject:self.largeThumbnailURL forKey:@"largeThumb"];
 }
 
 -(id)init
@@ -72,6 +74,7 @@ static NSDateFormatter *formatter;
 {
     self.archiveURL = [self uniqueURLWithPrefix:@"information"];
     self.dataURL = [self uniqueURLWithPrefix:@"data"];
+    self.largeThumbnailURL = [self uniqueURLWithPrefix:@"largeThumb"];
     
     [[PFAssetPickerViewController sharedLibrary] assetForURL:[self.asset valueForProperty:ALAssetPropertyAssetURL] resultBlock:^(ALAsset *asset) {
         // get data
@@ -81,6 +84,11 @@ static NSDateFormatter *formatter;
         
         NSData *data = UIImageJPEGRepresentation(image, 1);
         [data writeToURL:self.dataURL atomically:YES];
+        
+        UIImage *largeThumb = [UIImage imageWithCGImage:[representation fullScreenImage] scale:[representation scale] orientation:(int)[representation orientation]];
+        
+        NSData *dataLargeThumb = UIImagePNGRepresentation(largeThumb);
+        [dataLargeThumb writeToURL:self.largeThumbnailURL atomically:YES];
         
         [NSKeyedArchiver archiveRootObject:self toFile:[self.archiveURL path]];
         

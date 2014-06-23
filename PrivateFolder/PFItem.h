@@ -20,6 +20,7 @@
 //for saved files:
 @property (nonatomic, strong) NSURL *archiveURL;
 @property (nonatomic, strong) UIImage *thumbnail;
+@property (nonatomic, strong) NSURL *largeThumbnailURL;
 @property (nonatomic, strong) NSURL *dataURL;
 @property (nonatomic, strong) NSDate *dateSaved;
 

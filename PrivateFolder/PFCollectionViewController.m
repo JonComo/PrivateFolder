@@ -25,7 +25,7 @@
     UIBarButtonItem *import;
     UIBarButtonItem *export;
     UIBarButtonItem *delete;
-    UIBarButtonItem *settings;
+    //UIBarButtonItem *settings;
     
     UIBarButtonItem *spacer0;
     UIBarButtonItem *spacer1;
@@ -64,7 +64,7 @@
     
     import = [[UIBarButtonItem alloc] initWithTitle:@"Import" style:UIBarButtonItemStyleBordered target:self action:@selector(import)];
     
-    settings = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settings)];
+    //settings = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settings)];
     
     export = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStyleBordered target:self action:@selector(export)];
     
@@ -74,7 +74,7 @@
     spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
     spacer2 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
     
-    toolbar.items = @[import, spacer0, settings];
+    toolbar.items = @[import];
     
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     
@@ -141,7 +141,7 @@
             item.isSelected = NO;
         [collectionViewItems reloadData];
         
-        [toolbar setItems:@[import, spacer0, settings] animated:YES];
+        [toolbar setItems:@[import] animated:YES];
     }
     
     [self.navigationItem.rightBarButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
@@ -154,14 +154,25 @@
 
 -(void)export
 {
-    for (PFItem *item in savedItems)
-    {
-        if (item.isSelected)
-        {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"Exporting to Photo Library";
+    
+    __block int numToExport = 0;
+    
+    for (PFItem *item in savedItems){
+        if (item.isSelected){
+            numToExport ++;
+            
             NSData *data = [NSData dataWithContentsOfURL:item.dataURL];
             if (data){
                 [[PFAssetPickerViewController sharedLibrary] writeImageDataToSavedPhotosAlbum:data metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
+                    numToExport --;
                     
+                    if (numToExport == 0){
+                        hud.labelText = @"Success";
+                        hud.mode = MBProgressHUDModeText;
+                        [hud hide:YES afterDelay:1];
+                    }
                 }];
             }
         }
@@ -260,6 +271,20 @@
 {
     presentedIndex -= 1;
     
+    if (presentedIndex < 0){
+        presentedIndex = 0;
+        
+        [UIView animateWithDuration:0.1 animations:^{
+            imageView.layer.transform = CATransform3DMakeTranslation(30, 0, 0);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.12 animations:^{
+                imageView.layer.transform = CATransform3DIdentity;
+            }];
+        }];
+        
+        return;
+    }
+    
     [UIView animateWithDuration:0.2 animations:^{
         imageView.layer.transform = CATransform3DMakeTranslation(100, 0, 0);
         imageView.alpha = 0;
@@ -277,6 +302,21 @@
 -(void)swipeLeft
 {
     presentedIndex += 1;
+    
+    if (presentedIndex > savedItems.count-1){
+        presentedIndex = savedItems.count-1;
+        
+        
+        [UIView animateWithDuration:0.1 animations:^{
+            imageView.layer.transform = CATransform3DMakeTranslation(-30, 0, 0);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.12 animations:^{
+                imageView.layer.transform = CATransform3DIdentity;
+            }];
+        }];
+        
+        return;
+    }
     
     [UIView animateWithDuration:0.2 animations:^{
         imageView.layer.transform = CATransform3DMakeTranslation(-100, 0, 0);
@@ -321,7 +361,7 @@
     }
     
     PFItem *item = savedItems[presentedIndex];
-    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:item.dataURL]];
+    UIImage *image = [UIImage imageWithContentsOfFile:[item.largeThumbnailURL path]];
     imageView.image = image;
     
     if (!imageView.superview)
